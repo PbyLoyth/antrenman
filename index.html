@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c0a">
+<title>FORGE — Antrenman Takip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c0a;
+  --bg2:#0e120e;
+  --surface:#13181300;
+  --card:#151a15;
+  --card2:#1b211a;
+  --line:#26302550;
+  --line2:#2c3a2a;
+  --txt:#f1f4ec;
+  --muted:#828d7e;
+  --muted2:#5d685a;
+  --volt:#c8ff35;
+  --volt-dim:#9bc41f;
+  --amber:#ffb547;
+  --amber-dim:#c9842a;
+  --red:#ff5d4a;
+  --font-d:'Anton',Impact,sans-serif;
+  --font-b:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-b);
+  background:var(--bg);
+  color:var(--txt);
+  min-height:100vh;
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(120% 80% at 100% 0%, #12180f 0%, transparent 55%),
+    radial-gradient(120% 90% at 0% 100%, #0f1410 0%, transparent 50%);
+  background-attachment:fixed;
+}
+/* grain */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wrap{max-width:540px;margin:0 auto;padding:22px 16px 120px;position:relative;z-index:1}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:baseline;gap:9px}
+.brand h1{font-family:var(--font-d);font-size:30px;letter-spacing:1px;line-height:1}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--volt);box-shadow:0 0 14px var(--volt);transform:translateY(-2px)}
+.brand small{font-size:10px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase}
+.equip{font-size:10px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;text-align:right;line-height:1.5;border:1px solid var(--line2);border-radius:10px;padding:6px 9px}
+.equip b{color:var(--volt-dim)}
+
+/* week strip */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:22px}
+.daychip{
+  position:relative;border:1px solid var(--line2);background:#12161180;border-radius:13px;
+  padding:9px 0 8px;text-align:center;cursor:pointer;transition:.18s;overflow:hidden;
+}
+.daychip .dn{font-size:11px;letter-spacing:.5px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.daychip .dt{font-family:var(--font-d);font-size:15px;margin-top:3px;color:var(--muted2);letter-spacing:.5px}
+.daychip.rest .dt{color:var(--muted2)}
+.daychip.active{border-color:var(--volt);background:linear-gradient(180deg,#1c2412,#141810)}
+.daychip.active .dn{color:var(--volt)}
+.daychip.active .dt{color:var(--txt)}
+.daychip.today::before{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--amber);box-shadow:0 0 7px var(--amber)}
+.daychip .donebar{position:absolute;left:0;bottom:0;height:3px;background:var(--volt);width:0;transition:width .4s}
+.daychip.full .donebar{background:var(--volt);box-shadow:0 0 8px var(--volt)}
+
+/* body stats (Zepp) */
+.bodybar{display:flex;align-items:center;background:linear-gradient(180deg,#14180f,#0f1310);border:1px solid var(--line2);border-radius:16px;padding:13px 14px;margin-bottom:20px;position:relative;overflow:hidden}
+.bodybar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--volt);box-shadow:0 0 12px var(--volt);opacity:.7}
+.bodybar .seg{flex:1;text-align:center}
+.bodybar .seg .l{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.bodybar .seg .n{font-family:var(--font-d);font-size:25px;line-height:1.1;margin-top:3px;letter-spacing:.5px}
+.bodybar .seg .n small{font-size:11px;color:var(--muted);font-family:var(--font-b);font-weight:700}
+.bodybar .seg .n.volt{color:var(--volt)}
+.bodybar .vdiv{width:1px;align-self:stretch;background:var(--line2);margin:3px 2px}
+.bodybar .meta{position:absolute;top:7px;right:11px;font-size:10px;color:var(--muted2);letter-spacing:.4px;font-weight:600}
+.bodybar .trend.up{color:var(--red)}
+.bodybar .trend.down{color:var(--volt)}
+.bodybar.empty{justify-content:center;padding:16px 14px}
+.bodybar.empty::before{opacity:.25}
+.bodybar .ph{font-size:12px;color:var(--muted);text-align:center;line-height:1.45}
+.bodybar .ph b{color:var(--volt-dim)}
+.bodybar{cursor:pointer}
+.bodybar .meta .edit{color:var(--volt-dim);font-weight:700}
+.bodybar.edit{padding:11px 12px;cursor:default}
+.bodybar.edit::before{opacity:.6}
+.bedit{display:flex;align-items:flex-end;gap:8px;width:100%}
+.bedit .bf{flex:1;display:flex;flex-direction:column;gap:4px}
+.bedit label{font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.bedit input{background:#10140f;border:1px solid var(--line2);border-radius:9px;color:var(--txt);font-family:var(--font-d);font-size:18px;padding:8px 9px;width:100%;outline:none;letter-spacing:.5px}
+.bedit input:focus{border-color:var(--volt-dim)}
+.bedit .bsave{background:var(--volt);color:#0a0c0a;border:none;border-radius:9px;font-weight:800;font-size:13px;padding:10px 15px;cursor:pointer}
+.bedit .bsave:active{transform:scale(.96)}
+.bedit .bcancel{background:#161b14;color:var(--muted);border:1px solid var(--line2);border-radius:9px;font-size:15px;padding:10px 12px;cursor:pointer}
+
+/* hero */
+.hero{position:relative;margin-bottom:20px;padding:4px 2px}
+.hero .ghost{position:absolute;right:-6px;top:-34px;font-family:var(--font-d);font-size:130px;line-height:1;color:#ffffff05;letter-spacing:-4px;pointer-events:none;z-index:0}
+.hero .kicker{font-size:11px;letter-spacing:3px;color:var(--volt);text-transform:uppercase;font-weight:800;position:relative;z-index:1}
+.hero h2{font-family:var(--font-d);font-size:46px;line-height:.95;letter-spacing:.5px;margin:6px 0 2px;position:relative;z-index:1}
+.hero .focus{font-size:14px;color:var(--muted);position:relative;z-index:1;font-weight:600}
+.hero .meta{display:flex;gap:14px;margin-top:9px;position:relative;z-index:1}
+.hero .meta span{font-size:11px;color:var(--muted);letter-spacing:.5px}
+.hero .meta b{color:var(--txt)}
+
+/* progress */
+.prog{margin:16px 0 24px;position:relative;z-index:1}
+.prog .lab{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:7px}
+.prog .lab .l{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.prog .lab .v{font-family:var(--font-d);font-size:20px;color:var(--volt)}
+.prog .track{height:9px;background:#1b211a;border-radius:20px;overflow:hidden;border:1px solid var(--line2)}
+.prog .fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--volt-dim),var(--volt));transition:width .5s cubic-bezier(.3,1,.4,1);box-shadow:0 0 12px #c8ff3566}
+
+/* exercise card */
+.ex{
+  position:relative;background:linear-gradient(180deg,var(--card),#11150f);
+  border:1px solid var(--line2);border-radius:18px;padding:16px 15px 14px;margin-bottom:13px;
+  opacity:0;transform:translateY(12px);animation:rise .34s forwards;overflow:hidden;
+}
+@keyframes rise{to{opacity:1;transform:none}}
+.ex::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line2);transition:.3s}
+.ex.partial::before{background:var(--amber);box-shadow:0 0 12px var(--amber)}
+.ex.done::before{background:var(--volt);box-shadow:0 0 14px var(--volt)}
+.ex.done{border-color:#3a4d1f}
+.ex .row1{display:flex;align-items:flex-start;gap:11px}
+.ex .num{font-family:var(--font-d);font-size:17px;color:var(--muted2);min-width:22px;line-height:1.3}
+.ex.done .num{color:var(--volt)}
+.ex .nm{flex:1}
+.ex .nm h3{font-size:16px;font-weight:800;letter-spacing:.2px;line-height:1.2}
+.ex .nm h3 .star{color:var(--volt);font-size:13px}
+.ex .cue{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
+.stamp{font-family:var(--font-d);font-size:12px;letter-spacing:1px;padding:4px 8px;border-radius:8px;white-space:nowrap;align-self:flex-start;opacity:0;transition:.25s;transform:scale(.8)}
+.ex.partial .stamp{opacity:1;transform:none;color:var(--amber);background:#3a2c10;border:1px solid var(--amber-dim)}
+.ex.done .stamp{opacity:1;transform:none;color:#0a0c0a;background:var(--volt);border:1px solid var(--volt)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0 2px}
+.chip{font-size:11px;font-weight:700;letter-spacing:.3px;padding:5px 9px;border-radius:8px;background:#1d241b;border:1px solid var(--line2);color:#c2cdb8}
+.chip b{color:var(--txt)}
+.chip.tag{background:#2a2110;border-color:var(--amber-dim);color:var(--amber)}
+.chip.yt{background:#1c2a0d;border-color:var(--volt-dim);color:var(--volt);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:.15s}
+.chip.yt:active{transform:scale(.95)}
+.chip.yt:hover{background:#243a10}
+
+.sets{display:flex;align-items:center;gap:9px;margin-top:13px;flex-wrap:wrap}
+.sets .slab{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-right:2px}
+.dot-set{
+  width:36px;height:36px;border-radius:11px;border:2px solid var(--line2);background:#10140f;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.16s;
+  font-family:var(--font-d);font-size:14px;color:var(--muted2);user-select:none;
+}
+.dot-set:active{transform:scale(.9)}
+.dot-set.on{background:var(--volt);border-color:var(--volt);color:#0a0c0a;box-shadow:0 0 12px #c8ff3577}
+.dot-set.pop{animation:pop .3s}
+@keyframes pop{0%{transform:scale(.85)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+.tools{display:flex;align-items:center;gap:8px;margin-top:13px}
+.tbtn{flex:1;font-size:12px;font-weight:700;letter-spacing:.3px;padding:9px;border-radius:10px;border:1px solid var(--line2);background:#161b14;color:var(--muted);cursor:pointer;transition:.16s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tbtn:active{transform:scale(.97)}
+.tbtn.rest{color:var(--volt-dim);border-color:#3a4d1f}
+.tbtn.allbtn:hover{color:var(--txt)}
+.note{flex:1.6;background:#10140f;border:1px solid var(--line2);border-radius:10px;color:var(--txt);font-family:var(--font-b);font-size:12px;font-weight:600;padding:9px 11px;outline:none}
+.note::placeholder{color:var(--muted2);font-weight:500}
+.note:focus{border-color:var(--volt-dim)}
+
+/* rest day card */
+.rest-card{background:linear-gradient(180deg,#14180f,#0f1310);border:1px solid var(--line2);border-radius:20px;padding:30px 22px;text-align:center}
+.rest-card .ic{font-size:42px}
+.rest-card h3{font-family:var(--font-d);font-size:30px;margin:8px 0 4px;letter-spacing:1px}
+.rest-card p{color:var(--muted);font-size:14px;line-height:1.6;max-width:340px;margin:6px auto 0}
+.rest-card ul{list-style:none;margin-top:16px;display:inline-flex;flex-direction:column;gap:8px;text-align:left}
+.rest-card li{color:var(--txt);font-size:13px;font-weight:600;display:flex;gap:9px;align-items:center}
+.rest-card li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--volt);box-shadow:0 0 8px var(--volt)}
+
+/* footer summary */
+.foot{position:relative;z-index:1;margin-top:22px;background:linear-gradient(180deg,#15190f,#0f1310);border:1px solid var(--line2);border-radius:18px;padding:18px 17px}
+.foot .ft{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700}
+.foot .big{font-family:var(--font-d);font-size:26px;margin:5px 0 8px;letter-spacing:.5px}
+.foot .big b{color:var(--volt)}
+.foot .msg{font-size:13px;color:var(--muted);line-height:1.5}
+.foot .resetday{margin-top:14px;width:100%;padding:11px;border-radius:11px;border:1px solid var(--line2);background:#161b14;color:var(--muted);font-weight:700;font-size:12px;letter-spacing:.5px;cursor:pointer}
+.foot .resetday:active{transform:scale(.98)}
+.legend{text-align:center;font-size:11px;color:var(--muted2);margin-top:18px;line-height:1.6;letter-spacing:.3px}
+
+/* rest timer overlay */
+.rovl{position:fixed;inset:0;background:#060806ee;backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column}
+.rovl.show{display:flex}
+.ring{position:relative;width:220px;height:220px}
+.ring svg{transform:rotate(-90deg)}
+.ring .time{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:62px;color:var(--volt)}
+.rovl .rl{margin-top:8px;font-size:12px;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+.rovl .rbtns{display:flex;gap:12px;margin-top:26px}
+.rovl .rbtns button{font-family:var(--font-b);font-weight:800;font-size:14px;padding:13px 26px;border-radius:13px;border:1px solid var(--line2);background:#161b14;color:var(--txt);cursor:pointer}
+.rovl .rbtns .skip{background:var(--volt);color:#0a0c0a;border-color:var(--volt)}
+.addt{display:flex;gap:8px;margin-top:14px}
+.addt button{font-size:12px;font-weight:700;padding:8px 14px;border-radius:10px;border:1px solid var(--line2);background:#12160f;color:var(--muted);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1>FORGE<span class="dot"></span></h1>
+      <small>ev hipertrofi</small>
+    </div>
+    <div class="equip">2 × 10<b>kg</b> DUMBBELL<br>ev · sandalye</div>
+  </div>
+
+  <div class="week" id="weekStrip"></div>
+
+  <div class="bodybar empty" id="bodybar"></div>
+
+  <div id="content"></div>
+
+  <div class="legend">
+    tempo = <b>iniş-dur-kalkış-tepe</b> (sn) · RPE 8-9 (tükenişe 1-2 tekrar kala)<br>
+    her set dairesine bas: <b>hepsi yeşil = yaptım</b> · <b>bir kısmı = az yaptım</b>
+  </div>
+</div>
+
+<!-- rest timer -->
+<div class="rovl" id="rovl">
+  <div class="ring">
+    <svg width="220" height="220">
+      <circle cx="110" cy="110" r="100" stroke="#1b211a" stroke-width="10" fill="none"/>
+      <circle id="rprog" cx="110" cy="110" r="100" stroke="#c8ff35" stroke-width="10" fill="none"
+        stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="0"/>
+    </svg>
+    <div class="time" id="rtime">60</div>
+  </div>
+  <div class="rl">dinlenme</div>
+  <div class="addt">
+    <button data-add="15">+15sn</button>
+    <button data-add="30">+30sn</button>
+  </div>
+  <div class="rbtns">
+    <button id="rcancel">İptal</button>
+    <button class="skip" id="rskip">Atla ✓</button>
+  </div>
+</div>
+
+<script src="stats.js"></script>
+<script>
+const PROGRAM = {
+  0:{kicker:"Pazartesi · Push A",title:"OMUZ &amp; TRİCEPS",focus:"Omuz başrolde, triceps destekte",dur:"~50 dk",ex:[
+    {n:"DB Omuz Press",sub:"oturarak",sets:4,reps:"10-15",tempo:"3-0-1-0",rest:90,tag:"son set rest-pause",cue:"Sandalyede otur, kor sıkı, beli aşırı çukurlaştırma."},
+    {n:"Yana Lateral Raise",star:1,sets:4,reps:"15-20",tempo:"2-0-1-1",rest:60,tag:"son 2 set mekanik drop",cue:"Dirsekten götür, sallama yok, 'su dökercesine' hafif öne."},
+    {n:"Şınav / DB Floor Press",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:75,cue:"Göğüs minimal, kontrollü in, dipte durma yok."},
+    {n:"Arka Omuz Reverse Fly",sets:4,reps:"15-20",tempo:"2-1-2-1",rest:60,cue:"Kalçadan öne eğil, kolları yana aç, boyun rahat."},
+    {n:"Üstten Triceps Ext.",sub:"tek DB, iki el",sets:4,reps:"12-15",tempo:"3-1-1-0",rest:75,tag:"son set drop set",cue:"Dirsekler sabit ve dar, sadece önkol hareket etsin."},
+    {n:"Triceps Kickback",sets:3,reps:"15-20",tempo:"2-0-1-1",rest:60,cue:"Üst kol gövdeye paralel sabit, tepede 1sn sık."},
+  ]},
+  1:{kicker:"Salı · Pull A",title:"SIRT &amp; BİCEPS",focus:"Sırt kalınlığı + kol",dur:"~50 dk",ex:[
+    {n:"Tek Kol DB Row",sets:4,reps:"10-15/kol",tempo:"3-1-1-1",rest:90,tag:"tepede 1sn sık",cue:"Bir el sandalyeye dayan, dirseği cebe doğru çek."},
+    {n:"Eğilerek Çift DB Row",sets:4,reps:"12-15",tempo:"3-0-1-1",rest:90,cue:"Kalçadan eğil, sırt düz, önce kürekleri sık."},
+    {n:"DB Pullover",sub:"yerde sırtüstü",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:75,cue:"Kolları baş arkasına aç, lat esnemesini hisset."},
+    {n:"DB Shrug",sub:"trapez",sets:3,reps:"15-20",tempo:"1-2-1-2",rest:60,cue:"Omuzları kulağa çek, tepede 2sn sık, yavaş bırak."},
+    {n:"DB Biceps Curl",sets:4,reps:"12-15",tempo:"3-0-1-1",rest:60,tag:"son set drop set",cue:"Gövde tamamen sabit, negatifi 3sn'de indir."},
+    {n:"Hammer Curl",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:60,tag:"son set rest-pause",cue:"Avuçlar karşılıklı, dirsek sabit kalsın."},
+  ]},
+  2:{kicker:"Çarşamba · Bacak",title:"BACAK &amp; CORE",focus:"Minimal ama kaliteli",dur:"~35 dk",ex:[
+    {n:"DB Goblet Squat",sub:"1 DB göğüste",sets:3,reps:"15-20",tempo:"3-1-1-0",rest:90,cue:"Derine in, topuk yerde, göğüs dik."},
+    {n:"Bulgar Split Squat",star:1,sub:"arka ayak koltukta",sets:3,reps:"12-15/bacak",tempo:"3-1-1-0",rest:75,cue:"Dik gövdeyle in, ön diz ayak ucunu geçmesin."},
+    {n:"DB Romanian Deadlift",sets:3,reps:"15-20",tempo:"3-1-1-0",rest:90,cue:"Dizler hafif bükük, kalçayı geri it, sırt düz."},
+    {n:"Calf Raise",sub:"DB tut",sets:4,reps:"20-25",tempo:"2-1-1-2",rest:45,cue:"Parmak ucunda zirveye çık, tepede 1sn dur."},
+    {n:"Crunch + Rus Twist",sub:"süperset",sets:3,reps:"15-20",tempo:"kontrollü",rest:60,cue:"Twist'te 1 DB tut, karnı sürekli sıkı tut."},
+  ]},
+  3:{rest:1,kicker:"Perşembe",title:"DİNLENME",icon:"🧘",msg:"Bugün ağırlık yok — kas dinlenirken büyür.",list:["20-30 dk yürüyüş","10 dk omuz / sırt / kalça mobilite","Bol su + iyi uyku"],tail:"Yarın PUSH B — Omuz & Kol özel günü. Toparlan, yarın patla. 🔋"},
+  4:{kicker:"Cuma · Push B",title:"OMUZ &amp; KOL",focus:"ÖZEL GÜN — en sevdiğin gün 🔥",dur:"~55 dk",ex:[
+    {n:"Yana Lateral Raise",star:1,sets:5,reps:"15-20",tempo:"2-0-1-1",rest:60,tag:"son 2 set mekanik drop",cue:"Taze başla, günün yıldızı. Strict → eğil → parçalı."},
+    {n:"Oturarak DB Omuz Press",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:90,cue:"Sandalyede otur, kontrollü bas, kilitleme yok."},
+    {n:"Ön Raise / Y-Raise",sets:3,reps:"15-20",tempo:"2-1-1-0",rest:60,cue:"Kolları öne ya da Y şeklinde omuz hizasına kaldır."},
+    {n:"Skull Crusher → Düz Press",sub:"yerde, mekanik drop",sets:4,reps:"10-12 (+AMRAP)",tempo:"3-1-1-0",rest:75,tag:"mekanik drop",cue:"Alına indir; tükenince close-grip düz basışa geç."},
+    {n:"Curl → Hammer",sub:"mekanik drop set",sets:4,reps:"10-12 +10-12",tempo:"3-0-1-0",rest:75,tag:"mekanik drop",cue:"Supine curl bitince aynı ağırlıkla hammer'a geç."},
+    {n:"21'ler",sub:"finisher",sets:2,reps:"21",tempo:"yavaş",rest:60,cue:"7 alt yarı + 7 üst yarı + 7 tam tekrar. Pompayı kovala."},
+  ]},
+  5:{kicker:"Cumartesi · Pull B",title:"SIRT + GÖĞÜS",focus:"Sırt birinci, göğüs minimal",dur:"~50 dk",ex:[
+    {n:"Tek Kol DB Row",sub:"ağır odak",sets:4,reps:"8-12/kol",tempo:"3-1-1-1",rest:90,cue:"Biraz daha ağır hisset, kalınlık için kontrollü çek."},
+    {n:"Geniş Eğilerek Row",sub:"üst sırt",sets:4,reps:"12-15",tempo:"2-1-2-1",rest:90,cue:"Dirsekleri yana aç, kürekleri sıkıştır."},
+    {n:"DB Pullover",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:75,cue:"Lat esnemesini hisset, kontrollü geri getir."},
+    {n:"DB Floor Press",sub:"göğüs · minimal",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:75,cue:"Dirsek yere değince 1sn dur, patlayarak bas."},
+    {n:"DB Fly",sub:"yerde",sets:2,reps:"15-20",tempo:"3-1-1-0",rest:60,cue:"Kollar hafif bükük, geniş aç, göğüste sık."},
+    {n:"Arka Omuz Reverse Fly",sets:3,reps:"15-20",tempo:"2-1-2-1",rest:45,cue:"Arka omuza 2. doz, hafif tut yüksek tekrar."},
+  ]},
+  6:{rest:1,kicker:"Pazar",title:"DİNLENME",icon:"🛌",msg:"Tam dinlenme. Hafta boyu çalıştın, bugün onarım günü.",list:["Hafif yürüyüş / esneme (opsiyonel)","Protein + uyku önceliğin","Bu haftanın ağırlık/tekrarını gözden geçir"],tail:"Yarın yeni hafta: Pazartesi PUSH A. Geçen haftanın üstüne koy. 💪"},
+};
+const DAYS_SHORT=["PZT","SAL","ÇAR","PER","CUM","CMT","PAZ"];
+const DAY_TITLE=["Omuz","Sırt","Bacak","Dinlen","Kol","Sırt","Dinlen"];
+function ytQuery(name){
+  let q=name.split('→')[0].split('/')[0].replace('★','').replace(/\bDB\b/gi,'dumbbell').trim();
+  if(/^21/.test(q)) q='biceps 21 ler dumbbell';
+  else if(/^Curl$/i.test(q)) q='dumbbell biceps curl';
+  return encodeURIComponent(q+' nasıl yapılır');
+}
+
+/* ---- state / persistence ---- */
+const KEY="forge_v1";
+function mondayStamp(){
+  const n=new Date(); const my=(n.getDay()+6)%7;
+  const m=new Date(n); m.setDate(n.getDate()-my); m.setHours(0,0,0,0);
+  return m.getFullYear()+"-"+(m.getMonth()+1)+"-"+m.getDate();
+}
+let DB=load();
+function load(){
+  let d={};
+  try{d=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){d={}}
+  if(d.week!==mondayStamp()){ d={week:mondayStamp(),sets:{},notes:(d.notes||{}),body:(d.body||null)}; } // yeni hafta: setleri sıfırla; not & vücut verisi korunur
+  d.sets=d.sets||{}; d.notes=d.notes||{}; if(d.body===undefined)d.body=null;
+  return d;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(DB))}
+function setsOf(day,i,total){ const k=day+"-"+i; if(!DB.sets[k])DB.sets[k]=Array(total).fill(false); if(DB.sets[k].length!==total){const a=DB.sets[k];DB.sets[k]=Array(total).fill(false).map((_,x)=>a[x]||false);} return DB.sets[k]; }
+
+let view=(new Date().getDay()+6)%7; // bugün
+
+/* ---- render ---- */
+function renderWeek(){
+  const w=document.getElementById('weekStrip'); w.innerHTML='';
+  const today=(new Date().getDay()+6)%7;
+  for(let i=0;i<7;i++){
+    const p=PROGRAM[i]; const el=document.createElement('div');
+    el.className='daychip'+(i===view?' active':'')+(i===today?' today':'')+(p.rest?' rest':'');
+    let pct=0;
+    if(!p.rest){ let t=0,d=0; p.ex.forEach((e,x)=>{const s=setsOf(i,x,e.sets);t+=e.sets;d+=s.filter(Boolean).length;}); pct=t?d/t:0; if(pct>=1)el.classList.add('full'); }
+    el.innerHTML=`<div class="dn">${DAYS_SHORT[i]}</div><div class="dt">${p.rest?'—':DAY_TITLE[i]}</div><div class="donebar" style="width:${pct*100}%"></div>`;
+    el.onclick=()=>{view=i;renderAll();};
+    w.appendChild(el);
+  }
+}
+function renderContent(){
+  const c=document.getElementById('content'); const p=PROGRAM[view];
+  if(p.rest){
+    c.innerHTML=`<div class="hero"><div class="kicker">${p.kicker}</div><h2>${p.title}</h2></div>
+    <div class="rest-card"><div class="ic">${p.icon}</div><h3>Toparlanma</h3><p>${p.msg}</p>
+    <ul>${p.list.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <p style="margin-top:18px;color:var(--volt-dim);font-weight:600">${p.tail}</p></div>`;
+    return;
+  }
+  let total=0,done=0;
+  p.ex.forEach((e,i)=>{const s=setsOf(view,i,e.sets);total+=e.sets;done+=s.filter(Boolean).length;});
+  const pct=total?Math.round(done/total*100):0;
+  let html=`<div class="hero">
+    <div class="ghost">${DAYS_SHORT[view]}</div>
+    <div class="kicker">${p.kicker}</div>
+    <h2>${p.title}</h2>
+    <div class="focus">${p.focus}</div>
+    <div class="meta"><span>⏱ <b>${p.dur}</b></span><span>🏋 <b>${p.ex.length} hareket</b></span><span>🎯 <b>${total} set</b></span></div>
+  </div>
+  <div class="prog"><div class="lab"><div class="l">Bugünkü ilerleme</div><div class="v">${done}/${total} set</div></div>
+  <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+
+  p.ex.forEach((e,i)=>{
+    const s=setsOf(view,i,e.sets); const d=s.filter(Boolean).length;
+    const cls=d===0?'':(d>=e.sets?'done':'partial');
+    const stamp=d>=e.sets?'✓ YAPTIM':(d>0?'≈ AZ YAPTIM':'');
+    const nkey=view+'-'+i; const note=DB.notes[nkey]||'';
+    let dots='';
+    for(let x=0;x<e.sets;x++) dots+=`<div class="dot-set ${s[x]?'on':''}" data-i="${i}" data-x="${x}">${x+1}</div>`;
+    html+=`<div class="ex ${cls}" style="animation-delay:${i*28}ms">
+      <div class="row1">
+        <div class="num">${String(i+1).padStart(2,'0')}</div>
+        <div class="nm"><h3>${e.n} ${e.star?'<span class="star">★</span>':''}</h3>
+        ${e.sub?`<div class="cue" style="color:var(--muted2)">${e.sub}</div>`:''}
+        <div class="cue">${e.cue}</div></div>
+        <div class="stamp">${stamp}</div>
+      </div>
+      <div class="chips">
+        <div class="chip"><b>${e.sets}</b> set × <b>${e.reps}</b></div>
+        <div class="chip">tempo <b>${e.tempo}</b></div>
+        <div class="chip">dinl. <b>${e.rest}sn</b></div>
+        ${e.tag?`<div class="chip tag">${e.tag}</div>`:''}
+        <a class="chip yt" href="https://www.youtube.com/results?search_query=${ytQuery(e.n)}" target="_blank" rel="noopener">▶ nasıl yapılır</a>
+      </div>
+      <div class="sets"><span class="slab">setler</span>${dots}</div>
+      <div class="tools">
+        <button class="tbtn allbtn" data-all="${i}">${d>=e.sets?'Geri al':'Tümünü işaretle'}</button>
+        <button class="tbtn rest" data-rest="${e.rest}">⏱ ${e.rest}sn dinlen</button>
+        <input class="note" data-note="${nkey}" placeholder="ağırlık / not (örn 8kg×12)" value="${note.replace(/"/g,'&quot;')}">
+      </div>
+    </div>`;
+  });
+
+  // footer
+  let msg;
+  if(pct===0)msg="Hadi başlayalım. İlk seti işaretle, ivme yakala.";
+  else if(pct<50)msg="İyi gidiyorsun — ritmi bozma, negatifleri yavaş tut.";
+  else if(pct<100)msg="Yarıyı geçtin! Son setlerde RPE 8-9, tükenişe yaklaş.";
+  else msg="🔥 Gün tamam! Notlara ağırlığını yaz — gelecek hafta üstüne koy.";
+  html+=`<div class="foot"><div class="ft">Gün özeti</div>
+    <div class="big"><b>%${pct}</b> tamamlandı</div>
+    <div class="msg">${msg}</div>
+    <button class="resetday" id="resetDay">Bu günü sıfırla</button></div>`;
+  c.innerHTML=html;
+  bind();
+}
+function statusMsg(pct){
+  if(pct===0)return "Hadi başlayalım. İlk seti işaretle, ivme yakala.";
+  if(pct<50)return "İyi gidiyorsun — ritmi bozma, negatifleri yavaş tut.";
+  if(pct<100)return "Yarıyı geçtin! Son setlerde RPE 8-9, tükenişe yaklaş.";
+  return "🔥 Gün tamam! Notlara ağırlığını yaz — gelecek hafta üstüne koy.";
+}
+// SADECE ilgili karti + ilerlemeyi gunceller (tum listeyi yeniden cizmez -> aninda tepki)
+function updateCard(i){
+  const e=PROGRAM[view].ex[i], s=setsOf(view,i,e.sets), d=s.filter(Boolean).length;
+  const card=document.querySelectorAll('.ex')[i]; if(!card)return;
+  card.classList.toggle('done', d>=e.sets);
+  card.classList.toggle('partial', d>0 && d<e.sets);
+  card.querySelector('.stamp').textContent = d>=e.sets?'✓ YAPTIM':(d>0?'≈ AZ YAPTIM':'');
+  const ab=card.querySelector('.allbtn'); if(ab)ab.textContent = d>=e.sets?'Geri al':'Tümünü işaretle';
+  card.querySelectorAll('.dot-set').forEach((dot,x)=>dot.classList.toggle('on', s[x]));
+}
+function updateProgress(){
+  const p=PROGRAM[view]; if(p.rest)return;
+  let total=0,done=0; p.ex.forEach((e,i)=>{const s=setsOf(view,i,e.sets);total+=e.sets;done+=s.filter(Boolean).length;});
+  const pct=total?Math.round(done/total*100):0;
+  const v=document.querySelector('.prog .v'); if(v)v.textContent=done+'/'+total+' set';
+  const fill=document.querySelector('.prog .fill'); if(fill)fill.style.width=pct+'%';
+  const big=document.querySelector('.foot .big'); if(big)big.innerHTML='<b>%'+pct+'</b> tamamlandı';
+  const msg=document.querySelector('.foot .msg'); if(msg)msg.textContent=statusMsg(pct);
+  const chip=document.querySelectorAll('.week .daychip')[view];
+  if(chip){const bar=chip.querySelector('.donebar'); if(bar)bar.style.width=(total?done/total*100:0)+'%'; chip.classList.toggle('full', total>0&&done>=total);}
+}
+function bind(){
+  document.querySelectorAll('.dot-set').forEach(d=>{
+    d.onclick=()=>{
+      const i=+d.dataset.i,x=+d.dataset.x; const s=setsOf(view,i,PROGRAM[view].ex[i].sets);
+      s[x]=!s[x]; save();
+      d.classList.remove('pop'); void d.offsetWidth; d.classList.add('pop'); // pop'u yeniden tetikle
+      updateCard(i); updateProgress();
+    };
+  });
+  document.querySelectorAll('[data-all]').forEach(b=>{
+    b.onclick=()=>{const i=+b.dataset.all;const e=PROGRAM[view].ex[i];const s=setsOf(view,i,e.sets);
+      const fill=s.some(v=>!v); for(let x=0;x<s.length;x++)s[x]=fill; save(); updateCard(i); updateProgress();};
+  });
+  document.querySelectorAll('[data-rest]').forEach(b=>{ b.onclick=()=>startRest(+b.dataset.rest); });
+  document.querySelectorAll('[data-note]').forEach(inp=>{
+    inp.onchange=()=>{DB.notes[inp.dataset.note]=inp.value;save();};
+  });
+  const rd=document.getElementById('resetDay');
+  if(rd)rd.onclick=()=>{ if(confirm('Bu günün işaretlerini sıfırla?')){ PROGRAM[view].ex.forEach((e,i)=>{DB.sets[view+'-'+i]=Array(e.sets).fill(false);}); save(); PROGRAM[view].ex.forEach((e,i)=>updateCard(i)); updateProgress(); } };
+}
+const BODY_MONTHS=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+function renderBody(){
+  const el=document.getElementById('bodybar');
+  const z=window.BODY_STATS;                 // Zepp (otomatik, varsa)
+  const m=DB.body;                           // elle girilen
+  const s=(m && typeof m.kg==='number') ? m : ((z && typeof z.kg==='number') ? z : null);
+  const fromZepp=(s===z && s!==m);
+  if(!s){
+    el.className='bodybar empty';
+    el.innerHTML='<div class="ph">⚖️ <b>Kilonu gir</b> — panele dokun, kilo & yağ %\'ni yaz, trendini takip et</div>';
+    el.onclick=openBodyEdit; return;
+  }
+  el.className='bodybar';
+  const dk=(typeof s.prevKg==='number')?(s.kg-s.prevKg):null;
+  let trend='';
+  if(dk!==null && Math.abs(dk)>=0.05) trend=`<span class="trend ${dk<0?'down':'up'}">${dk<0?'▼':'▲'} ${Math.abs(dk).toFixed(1)}kg</span> · `;
+  const tag=fromZepp?'Zepp':'dokun ✎';
+  el.innerHTML=`<div class="meta">${trend}${s.date||''} · <span class="edit">${tag}</span></div>
+    <div class="seg"><div class="l">Kilo</div><div class="n">${s.kg.toFixed(1)}<small> kg</small></div></div>
+    <div class="vdiv"></div>
+    <div class="seg"><div class="l">Yağ Oranı</div><div class="n volt">${typeof s.fat==='number'?s.fat.toFixed(1):'–'}<small> %</small></div></div>
+    ${typeof s.muscle==='number'?`<div class="vdiv"></div><div class="seg"><div class="l">Kas</div><div class="n">${s.muscle.toFixed(1)}<small> kg</small></div></div>`:''}`;
+  el.onclick=openBodyEdit;
+}
+function openBodyEdit(){
+  const el=document.getElementById('bodybar'); const b=DB.body||{};
+  el.onclick=null; el.className='bodybar edit';
+  el.innerHTML=`<div class="bedit">
+    <div class="bf"><label>Kilo (kg)</label><input id="bk" type="number" inputmode="decimal" step="0.1" placeholder="78.4" value="${b.kg!=null?b.kg:''}"></div>
+    <div class="bf"><label>Yağ %</label><input id="bfat" type="number" inputmode="decimal" step="0.1" placeholder="18.2" value="${b.fat!=null?b.fat:''}"></div>
+    <button class="bsave" id="bsave">Kaydet</button>
+    <button class="bcancel" id="bcancel">✕</button>
+  </div>`;
+  const k=document.getElementById('bk'); k.focus();
+  k.onkeydown=document.getElementById('bfat').onkeydown=(e)=>{if(e.key==='Enter')saveBody();};
+  document.getElementById('bsave').onclick=saveBody;
+  document.getElementById('bcancel').onclick=renderBody;
+}
+function saveBody(){
+  const kg=parseFloat(document.getElementById('bk').value);
+  const fat=parseFloat(document.getElementById('bfat').value);
+  if(isNaN(kg)){document.getElementById('bk').focus();return;}
+  const old=DB.body||{}; const n=new Date();
+  DB.body={kg:kg, fat:isNaN(fat)?null:fat, date:n.getDate()+' '+BODY_MONTHS[n.getMonth()],
+    prevKg:(typeof old.kg==='number'?old.kg:null), prevFat:(typeof old.fat==='number'?old.fat:null)};
+  save(); renderBody();
+}
+function renderAll(){renderWeek();renderContent();}
+
+/* ---- rest timer ---- */
+let rt=null,rleft=0,rtotal=0;
+const rovl=document.getElementById('rovl'),rtime=document.getElementById('rtime'),rprog=document.getElementById('rprog');
+function startRest(sec){ rtotal=sec;rleft=sec;rovl.classList.add('show');updateRing();
+  clearInterval(rt); rt=setInterval(()=>{rleft--;updateRing();if(rleft<=0){endRest(true);}},1000);
+}
+function updateRing(){ rtime.textContent=rleft; const off=628*(1-rleft/rtotal); rprog.style.strokeDashoffset=off; }
+function endRest(beep){ clearInterval(rt); rovl.classList.remove('show'); if(beep)try{ding();}catch(e){} }
+document.getElementById('rcancel').onclick=()=>endRest(false);
+document.getElementById('rskip').onclick=()=>endRest(false);
+document.querySelectorAll('.addt button').forEach(b=>b.onclick=()=>{rleft+=+b.dataset.add;rtotal=Math.max(rtotal,rleft);updateRing();});
+function ding(){ const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(),g=a.createGain();
+  o.connect(g);g.connect(a.destination);o.type='sine';o.frequency.value=880;g.gain.setValueAtTime(.0001,a.currentTime);
+  g.gain.exponentialRampToValueAtTime(.3,a.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.5);
+  o.start();o.stop(a.currentTime+.5);
+  setTimeout(()=>{const o2=a.createOscillator(),g2=a.createGain();o2.connect(g2);g2.connect(a.destination);o2.type='sine';o2.frequency.value=1175;
+  g2.gain.setValueAtTime(.0001,a.currentTime);g2.gain.exponentialRampToValueAtTime(.3,a.currentTime+.02);g2.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.5);o2.start();o2.stop(a.currentTime+.5);},180);
+}
+
+renderAll();
+renderBody();
+</script>
+</body>
+</html>
