@@ -250,50 +250,51 @@ body::after{
 <script src="stats.js"></script>
 <script>
 const PROGRAM = {
-  0:{kicker:"Pazartesi · Push A",title:"OMUZ &amp; TRİCEPS",focus:"Omuz başrolde, triceps destekte",dur:"~50 dk",ex:[
-    {n:"DB Omuz Press",sub:"oturarak",sets:4,reps:"10-15",tempo:"3-0-1-0",rest:90,tag:"son set rest-pause",cue:"Sandalyede otur, kor sıkı, beli aşırı çukurlaştırma."},
-    {n:"Yana Lateral Raise",star:1,sets:4,reps:"15-20",tempo:"2-0-1-1",rest:60,tag:"son 2 set mekanik drop",cue:"Dirsekten götür, sallama yok, 'su dökercesine' hafif öne."},
-    {n:"Şınav / DB Floor Press",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:75,cue:"Göğüs minimal, kontrollü in, dipte durma yok."},
-    {n:"Arka Omuz Reverse Fly",sets:4,reps:"15-20",tempo:"2-1-2-1",rest:60,cue:"Kalçadan öne eğil, kolları yana aç, boyun rahat."},
-    {n:"Üstten Triceps Ext.",sub:"tek DB, iki el",sets:4,reps:"12-15",tempo:"3-1-1-0",rest:75,tag:"son set drop set",cue:"Dirsekler sabit ve dar, sadece önkol hareket etsin."},
-    {n:"Triceps Kickback",sets:3,reps:"15-20",tempo:"2-0-1-1",rest:60,cue:"Üst kol gövdeye paralel sabit, tepede 1sn sık."},
+  0:{kicker:"Pazartesi · Kısa & Ağır",title:"OMUZ &amp; TRİCEPS",focus:"Omuz başrol — 20-30 dk yoğun",dur:"~25 dk",ex:[
+    {n:"Yana Lateral Raise",star:1,sets:4,reps:"15-20",tempo:"2-0-1-1",rest:50,tag:"son 2 set mekanik drop",cue:"Dirsekten götür, sallama yok. Kısa dinlen, RPE 9 — asıl büyüme burada."},
+    {n:"DB Omuz Press",sub:"oturarak",sets:3,reps:"10-15",tempo:"3-0-1-0",rest:75,cue:"Kor sıkı, kontrollü bas, kilitleme yok."},
+    {n:"Üstten Triceps Ext.",sub:"tek DB",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:55,tag:"son set drop set",cue:"Dirsekler dar & sabit, tam ger."},
+    {n:"Triceps Kickback",sets:2,reps:"15-20",tempo:"2-0-1-1",rest:45,cue:"Üst kol sabit, tepede sık — bitir ve çık."},
   ]},
-  1:{kicker:"Salı · Pull A",title:"SIRT &amp; BİCEPS",focus:"Sırt kalınlığı + kol",dur:"~50 dk",ex:[
-    {n:"Tek Kol DB Row",sets:4,reps:"10-15/kol",tempo:"3-1-1-1",rest:90,tag:"tepede 1sn sık",cue:"Bir el sandalyeye dayan, dirseği cebe doğru çek."},
-    {n:"Eğilerek Çift DB Row",sets:4,reps:"12-15",tempo:"3-0-1-1",rest:90,cue:"Kalçadan eğil, sırt düz, önce kürekleri sık."},
-    {n:"DB Pullover",sub:"yerde sırtüstü",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:75,cue:"Kolları baş arkasına aç, lat esnemesini hisset."},
-    {n:"DB Shrug",sub:"trapez",sets:3,reps:"15-20",tempo:"1-2-1-2",rest:60,cue:"Omuzları kulağa çek, tepede 2sn sık, yavaş bırak."},
-    {n:"DB Biceps Curl",sets:4,reps:"12-15",tempo:"3-0-1-1",rest:60,tag:"son set drop set",cue:"Gövde tamamen sabit, negatifi 3sn'de indir."},
-    {n:"Hammer Curl",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:60,tag:"son set rest-pause",cue:"Avuçlar karşılıklı, dirsek sabit kalsın."},
+  1:{kicker:"Salı · Kısa & Ağır",title:"SIRT &amp; BİCEPS",focus:"Sırt (hafif) + kol pompası",dur:"~25 dk",ex:[
+    {n:"Tek Kol DB Row",star:1,sets:3,reps:"10-15/kol",tempo:"3-1-1-1",rest:60,tag:"tepede 1sn sık",cue:"Dirseği cebe doğru çek, kürek kemiğini çalıştır."},
+    {n:"Eğilerek Çift DB Row",sets:3,reps:"12-15",tempo:"3-0-1-1",rest:70,cue:"Sırt düz, önce kürekleri sık."},
+    {n:"DB Biceps Curl",sets:3,reps:"12-15",tempo:"3-0-1-1",rest:50,tag:"son set drop set",cue:"Gövde sabit, negatifi yavaş indir."},
+    {n:"Hammer Curl",sets:2,reps:"12-15",tempo:"3-0-1-0",rest:45,cue:"Avuçlar karşılıklı, dirsek sabit."},
   ]},
-  2:{kicker:"Çarşamba · Bacak",title:"BACAK &amp; CORE",focus:"Minimal ama kaliteli",dur:"~35 dk",ex:[
-    {n:"DB Goblet Squat",sub:"1 DB göğüste",sets:3,reps:"15-20",tempo:"3-1-1-0",rest:90,cue:"Derine in, topuk yerde, göğüs dik."},
-    {n:"Bulgar Split Squat",star:1,sub:"arka ayak koltukta",sets:3,reps:"12-15/bacak",tempo:"3-1-1-0",rest:75,cue:"Dik gövdeyle in, ön diz ayak ucunu geçmesin."},
-    {n:"DB Romanian Deadlift",sets:3,reps:"15-20",tempo:"3-1-1-0",rest:90,cue:"Dizler hafif bükük, kalçayı geri it, sırt düz."},
-    {n:"Calf Raise",sub:"DB tut",sets:4,reps:"20-25",tempo:"2-1-1-2",rest:45,cue:"Parmak ucunda zirveye çık, tepede 1sn dur."},
-    {n:"Crunch + Rus Twist",sub:"süperset",sets:3,reps:"15-20",tempo:"kontrollü",rest:60,cue:"Twist'te 1 DB tut, karnı sürekli sıkı tut."},
+  2:{kicker:"Çarşamba · Kısa & Ağır",title:"GÖĞÜS &amp; OMUZ",focus:"Göğüs (hafif) + omuz yan baş",dur:"~25 dk",ex:[
+    {n:"DB Floor Press",sets:3,reps:"10-15",tempo:"3-0-1-0",rest:70,cue:"Dirsek yere değince patlayarak bas."},
+    {n:"DB Fly",sub:"yerde",sets:3,reps:"15-20",tempo:"3-1-1-0",rest:45,cue:"Kollar hafif bükük, geniş aç, göğüste sık."},
+    {n:"Yana Lateral Raise",star:1,sets:3,reps:"15-20",tempo:"2-0-1-1",rest:50,tag:"son 2 set drop",cue:"Omuz 2. doz — yan baş hacmi."},
+    {n:"Arka Omuz Reverse Fly",sets:3,reps:"15-20",tempo:"2-1-2-1",rest:45,cue:"Öne eğil, kolları yana aç, boyun rahat."},
   ]},
-  3:{rest:1,kicker:"Perşembe",title:"DİNLENME",icon:"🧘",msg:"Bugün ağırlık yok — kas dinlenirken büyür.",list:["20-30 dk yürüyüş","10 dk omuz / sırt / kalça mobilite","Bol su + iyi uyku"],tail:"Yarın PUSH B — Omuz & Kol özel günü. Toparlan, yarın patla. 🔋"},
-  4:{kicker:"Cuma · Push B",title:"OMUZ &amp; KOL",focus:"ÖZEL GÜN — en sevdiğin gün 🔥",dur:"~55 dk",ex:[
-    {n:"Yana Lateral Raise",star:1,sets:5,reps:"15-20",tempo:"2-0-1-1",rest:60,tag:"son 2 set mekanik drop",cue:"Taze başla, günün yıldızı. Strict → eğil → parçalı."},
-    {n:"Oturarak DB Omuz Press",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:90,cue:"Sandalyede otur, kontrollü bas, kilitleme yok."},
-    {n:"Ön Raise / Y-Raise",sets:3,reps:"15-20",tempo:"2-1-1-0",rest:60,cue:"Kolları öne ya da Y şeklinde omuz hizasına kaldır."},
-    {n:"Skull Crusher → Düz Press",sub:"yerde, mekanik drop",sets:4,reps:"10-12 (+AMRAP)",tempo:"3-1-1-0",rest:75,tag:"mekanik drop",cue:"Alına indir; tükenince close-grip düz basışa geç."},
-    {n:"Curl → Hammer",sub:"mekanik drop set",sets:4,reps:"10-12 +10-12",tempo:"3-0-1-0",rest:75,tag:"mekanik drop",cue:"Supine curl bitince aynı ağırlıkla hammer'a geç."},
-    {n:"21'ler",sub:"finisher",sets:2,reps:"21",tempo:"yavaş",rest:60,cue:"7 alt yarı + 7 üst yarı + 7 tam tekrar. Pompayı kovala."},
+  3:{kicker:"Perşembe · Kol Günü",title:"BİCEPS &amp; TRİCEPS",focus:"Kol özel — kısa & sert",dur:"~25 dk",ex:[
+    {n:"DB Biceps Curl",star:1,sets:4,reps:"10-15",tempo:"3-0-1-1",rest:55,tag:"son set drop set",cue:"Tam ROM, yavaş negatif, RPE 9."},
+    {n:"Close-grip DB Floor Press",sub:"triceps compound",sets:3,reps:"10-15",tempo:"3-0-1-0",rest:60,cue:"DB'ler bitişik, dirsekler gövdeye yakın — triceps'e yüklen."},
+    {n:"Üstten Triceps Ext.",sub:"tek DB, uzun baş",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:50,tag:"son set drop set",cue:"Baş arkasına tam ger, dirsekler dar & sabit."},
+    {n:"Hammer Curl → 21'ler",sub:"finisher",sets:2,reps:"12-15 → 21",tempo:"yavaş",rest:45,cue:"Hammer bitince 21 (7 alt + 7 üst + 7 tam) ile pompayı patlat."},
   ]},
-  5:{kicker:"Cumartesi · Pull B",title:"SIRT + GÖĞÜS",focus:"Sırt birinci, göğüs minimal",dur:"~50 dk",ex:[
-    {n:"Tek Kol DB Row",sub:"ağır odak",sets:4,reps:"8-12/kol",tempo:"3-1-1-1",rest:90,cue:"Biraz daha ağır hisset, kalınlık için kontrollü çek."},
-    {n:"Geniş Eğilerek Row",sub:"üst sırt",sets:4,reps:"12-15",tempo:"2-1-2-1",rest:90,cue:"Dirsekleri yana aç, kürekleri sıkıştır."},
-    {n:"DB Pullover",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:75,cue:"Lat esnemesini hisset, kontrollü geri getir."},
-    {n:"DB Floor Press",sub:"göğüs · minimal",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:75,cue:"Dirsek yere değince 1sn dur, patlayarak bas."},
-    {n:"DB Fly",sub:"yerde",sets:2,reps:"15-20",tempo:"3-1-1-0",rest:60,cue:"Kollar hafif bükük, geniş aç, göğüste sık."},
-    {n:"Arka Omuz Reverse Fly",sets:3,reps:"15-20",tempo:"2-1-2-1",rest:45,cue:"Arka omuza 2. doz, hafif tut yüksek tekrar."},
+  4:{kicker:"Cuma · Kısa & Ağır",title:"OMUZ &amp; SIRT",focus:"Omuz başrol + sırt (hafif)",dur:"~25 dk",ex:[
+    {n:"Yana Lateral Raise",star:1,sets:4,reps:"15-20",tempo:"2-0-1-1",rest:50,tag:"son 2 set mekanik drop",cue:"Taze başla, günün yıldızı — omuz 3. gün."},
+    {n:"Oturarak DB Omuz Press",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:70,cue:"Kontrollü bas, kilitleme yok."},
+    {n:"Tek Kol DB Row",sets:3,reps:"10-15/kol",tempo:"3-1-1-1",rest:60,cue:"Sırt 2. doz — genişlik + kalınlık."},
+    {n:"Reverse Fly → Shrug",sub:"süperset",sets:3,reps:"15-20",tempo:"2-1-1-1",rest:45,cue:"Arka omuz + trapez, dinlenmeden geç."},
   ]},
-  6:{rest:1,kicker:"Pazar",title:"DİNLENME",icon:"🛌",msg:"Tam dinlenme. Hafta boyu çalıştın, bugün onarım günü.",list:["Hafif yürüyüş / esneme (opsiyonel)","Protein + uyku önceliğin","Bu haftanın ağırlık/tekrarını gözden geçir"],tail:"Yarın yeni hafta: Pazartesi PUSH A. Geçen haftanın üstüne koy. 💪"},
+  5:{kicker:"Cumartesi · Kısa & Ağır",title:"GÖĞÜS &amp; KOL",focus:"Göğüs (hafif) + kol 2. doz",dur:"~25 dk",ex:[
+    {n:"DB Floor Press",sets:3,reps:"12-15",tempo:"3-0-1-0",rest:65,cue:"Göğüs 2. doz, kontrollü in patlayarak bas."},
+    {n:"DB Biceps Curl",sets:3,reps:"12-15",tempo:"3-0-1-1",rest:50,tag:"son set drop set",cue:"Pompayı kovala, form bozma."},
+    {n:"Üstten Triceps Ext.",sub:"tek DB",sets:3,reps:"12-15",tempo:"3-1-1-0",rest:50,cue:"Dirsekler dar, tam ger."},
+    {n:"DB Pullover",sub:"yerde",sets:2,reps:"15-20",tempo:"3-1-1-0",rest:45,cue:"Göğüs & sırt esnemesi, kontrollü."},
+  ]},
+  6:{kicker:"Pazar · Omuz & Kol Pump",title:"OMUZ &amp; KOL",focus:"Omuz + kol pompası — bacak yok",dur:"~25 dk",ex:[
+    {n:"Yana Lateral Raise",star:1,sets:4,reps:"15-20",tempo:"2-0-1-1",rest:50,tag:"son 2 set drop",cue:"Omuz 4. gün — hacim kral, yine yoğun bas."},
+    {n:"Ön / Y-Raise",sets:3,reps:"15",tempo:"2-1-1-0",rest:45,cue:"Ön omuzu tamamla, kontrollü kaldır."},
+    {n:"Curl → Hammer",sub:"mekanik drop süperset",sets:3,reps:"10-12 +10-12",tempo:"3-0-1-0",rest:55,tag:"mekanik drop",cue:"Curl bitince aynı ağırlıkla hammer'a geç, dinlenme yok."},
+    {n:"Üstten Triceps → Kickback",sub:"süperset",sets:3,reps:"12-15",tempo:"2-0-1-1",rest:45,cue:"Uzun baş sonra kickback — kolu bitirerek çık."},
+  ]},
 };
 const DAYS_SHORT=["PZT","SAL","ÇAR","PER","CUM","CMT","PAZ"];
-const DAY_TITLE=["Omuz","Sırt","Bacak","Dinlen","Kol","Sırt","Dinlen"];
+const DAY_TITLE=["Omuz","Sırt","Göğüs","Kol","Omuz","Kol","Omuz"];
 function ytQuery(name){
   let q=name.split('→')[0].split('/')[0].replace('★','').replace(/\bDB\b/gi,'dumbbell').trim();
   if(/^21/.test(q)) q='biceps 21 ler dumbbell';
